@@ -22,5 +22,6 @@ func init() {
 	D.Client = db
 	if gormConfig.AutoMigrate {
 		D.Client.AutoMigrate(&models.UserModel{})
+		D.Client.AutoMigrate(&models.NodeModel{})
 	}
 }

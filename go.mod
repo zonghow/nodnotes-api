@@ -7,9 +7,9 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
+	github.com/google/uuid v1.2.0
 	github.com/iris-contrib/swagger v0.0.0-20210110101208-2670b336b278
 	github.com/iris-contrib/swagger/v12 v12.2.0-alpha
-	github.com/kataras/iris v0.0.2
 	github.com/kataras/iris/v12 v12.2.0-alpha2.0.20210427211137-fa175eb84754
 	github.com/kataras/jwt v0.1.2
 	github.com/kr/text v0.2.0 // indirect

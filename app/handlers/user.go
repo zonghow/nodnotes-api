@@ -29,11 +29,15 @@ type tokenResp struct {
 // @Success 200
 // @Router /v1/user [get]
 func GetCurrentUser(ctx iris.Context) {
-	user := helpers.GetUser(ctx)
-	if user == nil {
-		ctx.StatusCode(iris.StatusForbidden)
+	userClaims := helpers.GetUser(ctx)
+	if userClaims == nil {
+		ctx.StatusCode(iris.StatusUnauthorized)
 		return
 	}
+	user := models.UserModel{}
+	db.D.Client.Where("username = ?", userClaims.ID).First(&user)
+	ctx.JSON(user.Serializer())
+	return
 }
 
 // UserLogout godoc
@@ -137,6 +141,26 @@ func UserSignin(ctx iris.Context) {
 			iris.StatusInternalServerError,
 			iris.NewProblem().Title(err.Error()),
 		)
+	}
+	rootNode := &models.NodeModel{
+		UserID: user.ID,
+		Value:  "Untitled",
+		IsRoot: true,
+	}
+	if err := db.D.Client.Create(&rootNode).Error; err != nil {
+		ctx.StopWithProblem(
+			iris.StatusInternalServerError,
+			iris.NewProblem().Title(err.Error()),
+		)
+		return
+	}
+	user.RootNodeID = rootNode.ID
+	if err := db.D.Client.Save(&user).Error; err != nil {
+		ctx.StopWithProblem(
+			iris.StatusInternalServerError,
+			iris.NewProblem().Title(err.Error()),
+		)
+		return
 	}
 	token, err := helpers.JWTSign(user.ID, user.Username)
 	if err != nil {

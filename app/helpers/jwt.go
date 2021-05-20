@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"log"
+	"fmt"
 	"nodnotes-api/app/config"
 	"strconv"
 	"time"
@@ -34,12 +34,9 @@ func JWTVerify(token string) (*UserClaims, error) {
 }
 
 func GetUser(ctx iris.Context) *UserClaims {
-	cookie, err := ctx.Request().Cookie("AUTH_TOKEN")
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	userClaims, err := JWTVerify(cookie.Value)
+	authToken := ctx.GetCookie("AUTH_TOKEN")
+	userClaims, err := JWTVerify(authToken)
+	fmt.Println("userClaims", userClaims)
 	if err != nil {
 		return nil
 	}
